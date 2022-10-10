@@ -1,7 +1,7 @@
 ## Real time chat application backend with NodeJs and GraphQL
 
 Frontend: [NextJs, Apollo GraphQL](https://github.com/yashp8/imessage-next/).\
-This is a [NodeJs](https://nodejs.org/) project with Apollo GraphQL and MongoDB. \
+This is a [NodeJs](https://nodejs.org/) project with Apollo GraphQL and MongoDB.
 
 ## Getting Started
 
