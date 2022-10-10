@@ -19,7 +19,7 @@ Open [http://localhost:4000](http://localhost:4000) with your browser to see the
 ## Add .env file with below variables
 
 ```bash
-CLIENT_ORIGIN=<>
+CLIENT_ORIGIN=http://localhost:3000
 
 MONGODB_URI=<>
 ```
