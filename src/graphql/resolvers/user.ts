@@ -1,89 +1,87 @@
-import {CreateUsernameResponse, GraphQLContext} from "../../util/types";
-import {ApolloError} from "apollo-server-core";
-import {User} from "@prisma/client";
+import { CreateUsernameResponse, GraphQLContext } from '../../util/types';
+import { ApolloError } from 'apollo-server-core';
+import { User } from '@prisma/client';
 
 const resolvers = {
-    Query: {
-        searchUsers: async (
-            _: any,
-            args: { username: string },
-            context: GraphQLContext
-        ): Promise<Array<User>> => {
-            const {username: searchUsername} = args
-            const {session, prisma} = context;
-            if (!session?.user) {
-                throw new ApolloError('Not authorized')
-            }
+  Query: {
+    searchUsers: async (
+      _: any,
+      args: { username: string },
+      context: GraphQLContext,
+    ): Promise<Array<User>> => {
+      const { username: searchUsername } = args;
+      const { session, prisma } = context;
+      if (!session?.user) {
+        throw new ApolloError('Not authorized');
+      }
 
-            const {
-                user: {username: myUsername}
-            } = session;
+      const {
+        user: { username: myUsername },
+      } = session;
 
-            try {
-                return await prisma.user.findMany({
-                    where: {
-                        username: {
-                            contains: searchUsername,
-                            not: myUsername,
-                            mode: 'insensitive'
-                        }
-                    }
-                });
-                // return users;
-            } catch (err: any) {
-                throw new ApolloError(err?.message)
-            }
-        }
+      try {
+        return await prisma.user.findMany({
+          where: {
+            username: {
+              contains: searchUsername,
+              not: myUsername,
+              mode: 'insensitive',
+            },
+          },
+        });
+        // return users;
+      } catch (err: any) {
+        throw new ApolloError(err?.message);
+      }
     },
-    Mutation: {
-        createUsername: async (
-            _: any,
-            args: { username: string },
-            context: GraphQLContext
-        ): Promise<CreateUsernameResponse> => {
-            const {username} = args;
-            const {session, prisma} = context;
-            if (!session?.user) {
-                return {
-                    error: 'Not authorized'
-                };
-            }
+  },
+  Mutation: {
+    createUsername: async (
+      _: any,
+      args: { username: string },
+      context: GraphQLContext,
+    ): Promise<CreateUsernameResponse> => {
+      const { username } = args;
+      const { session, prisma } = context;
+      if (!session?.user) {
+        return {
+          error: 'Not authorized',
+        };
+      }
 
-            const {id: userId} = session.user;
+      const { id: userId } = session.user;
 
-            try {
-                const existingUser = await prisma.user.findUnique({
-                    where: {
-                        username,
-                    }
-                });
+      try {
+        const existingUser = await prisma.user.findUnique({
+          where: {
+            username,
+          },
+        });
 
-                if (existingUser) {
-                    return {
-                        error: 'Username already taken'
-                    }
-                }
-
-                await prisma.user.update({
-                    where: {
-                        id: userId
-                    },
-                    data: {
-                        username
-                    }
-                });
-
-                return {success: true}
-
-            } catch (error: any) {
-                console.log('Create user error', error);
-                return {
-                    error: error?.message,
-                }
-            }
-
+        if (existingUser) {
+          return {
+            error: 'Username already taken',
+          };
         }
+
+        await prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            username,
+          },
+        });
+
+        return { success: true };
+      } catch (error: any) {
+        console.log('Create user error', error);
+        return {
+          error: error?.message,
+        };
+      }
     },
+  },
 };
 
 export default resolvers;
