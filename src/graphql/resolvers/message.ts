@@ -187,6 +187,7 @@ export const messagePopulated = Prisma.validator<Prisma.MessageInclude>()({
       username: true,
     },
   },
+  conversation: true,
 });
 
 export default resolvers;
