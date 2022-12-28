@@ -1,11 +1,18 @@
 import { gql } from 'graphql-tag';
 
 const typeDefs = gql`
+
+type Conversation {
+    id: String
+  }
+
   type Message {
     id: String
     sender: User
     body: String
-    createdAt: Date
+    createdAt: Date,
+    conversationId: String,
+    conversation: Conversation
   }
 
   type Query {
